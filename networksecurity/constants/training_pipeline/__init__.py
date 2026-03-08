@@ -5,11 +5,11 @@ import sys
 
 TARGET_COLUMN = "result"
 PIPELINE_NAME = "networksecurity"
-ARTIFACT_NAME = "artifiacts"
+ARTIFACT_NAME = "artifacts"
 FILE_NAME = "phisingData.csv"
 
-TRAIN_FILE = "train.csv"
-TEST_FILE = "test.csv"
+TRAIN_FILE_NAME = "train.csv"
+TEST_FILE_NAME = "test.csv"
 
 
 DATA_INGESTION_DATABASE_NAME = "NetworkSecurity"
