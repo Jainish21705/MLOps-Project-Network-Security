@@ -13,6 +13,8 @@ TRAIN_FILE_NAME = "train.csv"
 TEST_FILE_NAME = "test.csv"
 
 SCHEMA_FILE_PATH = os.path.join("data_schema","schema.yaml")
+SAVED_MODEL_PATH = os.path.join("saved_models")
+
 
 DATA_INGESTION_DATABASE_NAME = "NetworkSecurity"
 DATA_INGESTION_COLLECTION_NAME = "dataset"
