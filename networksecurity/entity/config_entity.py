@@ -47,3 +47,9 @@ class DataTransformationConfig:
         self.transformed_test_file_path = os.path.join(self.data_transformation_dir,training_pipeline.DATA_TRANSFORMATION_DATA_DIR,training_pipeline.TEST_FILE_NAME.replace("csv","npy"))
         self.transformed_object_file_path = os.path.join(self.data_transformation_dir,training_pipeline.DATA_TRANSFORMATION_TRANSFORMED_OBJECT_DIR,training_pipeline.DATA_TRANSFORMATION_TRANSFORMED_OBJECT_FILE_NAME)
         
+class ModelTrainerConfig:
+    def __init__(self,training_pipeline_congfig:TrainingPipelineConfig):
+        self.model_trainer_dir = os.path.join(training_pipeline_congfig.artifact_dir,training_pipeline.MODEL_TRAINER_DIR)
+        self.trained_model_file_path = os.path.join(self.model_trainer_dir,training_pipeline.MODEL_TRAINER_TRAINED_MODEL_DIR,training_pipeline.MODEL_TRAINER_TRAINED_MODEL_FILE_PATH)
+        self.excepted_accuracy = os.path.join(training_pipeline.MODEL_TRAINER_EXCEPTED_SCORE)
+        self.overfitting_underfitting_threshold = os.path.join(training_pipeline.MODEL_TRAINER_OVERFITTING_UNDERFITTING_THRESHOLD)
