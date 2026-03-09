@@ -6,6 +6,9 @@ import os,sys
 import numpy as np
 import pandas as pd
 import mlflow
+import dagshub
+dagshub.init(repo_owner='jainish2107', repo_name='MLOps-Project-Network-Security', mlflow=True)
+
 
 from networksecurity.utils.main_utils.utils import save_obj,load_obj,load_numpy_array_data,evaulate_models
 from networksecurity.utils.ml_utils.metric.classfication_metric import get_classification_score
@@ -31,13 +34,14 @@ class ModelTrainer:
     
     def track_mlflow(self,best_model_name:str,best_model,classification_train_metric:dict):
         try:
-            f1_score = classification_train_metric.f1_score
-            precision = classification_train_metric.precision
-            recall = classification_train_metric.recall
-
-            mlflow.log_params({"best_model_name":best_model_name})
-            mlflow.log_metrics({"f1_score":f1_score,"precision":precision,"recall":recall})
-            mlflow.sklearn.log_model(best_model,"Model")
+            with mlflow.start_run():
+                f1_score = classification_train_metric.f1_score
+                precision = classification_train_metric.precision
+                recall = classification_train_metric.recall
+                mlflow.log_params({"best_model_name":best_model_name})
+                mlflow.log_metrics({"f1_score":f1_score,"precision":precision,"recall":recall})
+                mlflow.sklearn.log_model(best_model,"Model")
+            
         except Exception as e:
             raise NetworkSecurityException(e,sys)
         
