@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from datetime import datetime
 import sys
+import os
 
 TARGET_COLUMN = "result"
 PIPELINE_NAME = "networksecurity"
@@ -11,6 +12,7 @@ FILE_NAME = "phisingData.csv"
 TRAIN_FILE_NAME = "train.csv"
 TEST_FILE_NAME = "test.csv"
 
+SCHEMA_FILE_PATH = os.path.join("data_schema","schema.yaml")
 
 DATA_INGESTION_DATABASE_NAME = "NetworkSecurity"
 DATA_INGESTION_COLLECTION_NAME = "dataset"
