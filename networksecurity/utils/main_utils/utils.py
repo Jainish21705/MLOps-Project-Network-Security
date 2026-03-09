@@ -5,6 +5,7 @@ from networksecurity.exception.exception import NetworkSecurityException
 from networksecurity.logging.logger import logger
 import pickle
 import pandas as pd
+import numpy as np
 # import dill
 
 def read_yaml_file(file_path:str)->dict:
@@ -35,5 +36,23 @@ def write_yaml_file(file_path: str, data: object, replace: bool = False):
 def read_data(file_path:str)->pd.DataFrame:
     try:
         return pd.read_csv(file_path)
+    except Exception as e:
+        raise NetworkSecurityException(e,sys)
+    
+def save_numpy_array_data(file_path:str,array:np.array):
+    try:
+        dir_path = os.path.dirname(file_path)
+        os.makedirs(dir_path,exist_ok=True)
+        with open(file_path,"wb") as file_obj:
+            np.save(file_obj,array)
+    except Exception as e:
+        raise NetworkSecurityException(e,sys)
+
+def save_obj(file_path:str,obj:object):
+    try:
+        dir_path = os.path.dirname(file_path)
+        os.makedirs(dir_path,exist_ok=True)
+        with open(file_path,"wb") as file_obj:
+            pickle.dump(obj,file_obj)
     except Exception as e:
         raise NetworkSecurityException(e,sys)

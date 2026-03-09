@@ -4,7 +4,7 @@ from datetime import datetime
 import sys
 import os
 
-TARGET_COLUMN = "result"
+TARGET_COLUMN = "Result"
 PIPELINE_NAME = "networksecurity"
 ARTIFACT_NAME = "artifacts"
 FILE_NAME = "phisingData.csv"
