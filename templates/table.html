@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CSV Prediction</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>Upload CSV for Prediction</h2>
+
+<form id="PredictForm">
+    <input type="file" name="file" accept=".csv" required>
+    <button type="submit">Predict</button>
+</form>
+
+<br>
+
+<div id="result"></div>
+
+<script>
+document.getElementById("PredictForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const form = document.getElementById("PredictForm");
+    const formData = new FormData(form);
+
+    fetch("http://127.0.0.1:8000/predict", {   // no need for full localhost URL
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+        document.getElementById("result").innerHTML = data;
+    })
+    .catch(error => {
+        console.error("Error:", error);
+    });
+});
+</script>
+
+</body>
+</html>

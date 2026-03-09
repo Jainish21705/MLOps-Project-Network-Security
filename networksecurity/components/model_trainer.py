@@ -5,9 +5,9 @@ from networksecurity.logging.logger import logger
 import os,sys
 import numpy as np
 import pandas as pd
-import mlflow
-import dagshub
-dagshub.init(repo_owner='jainish2107', repo_name='MLOps-Project-Network-Security', mlflow=True)
+# import mlflow
+# import dagshub
+# dagshub.init(repo_owner='jainish2107', repo_name='MLOps-Project-Network-Security', mlflow=True)
 
 
 from networksecurity.utils.main_utils.utils import save_obj,load_obj,load_numpy_array_data,evaulate_models
@@ -56,18 +56,18 @@ class ModelTrainer:
 
         params = {
             "Decision_Tree":{
-                "criterion":['gini','entropy']
+                "criterion":['gini','entropy','log_loss'],
             },
             "Random_Forest":{
-                "n_estimators":[8,16,128,256]
+                "n_estimators":[8,16,32,64,128,256]
             },
             "Gradient_Boosting":{
-                "learning_rate":[0.1,0.01],
-                "n_estimators":[8,16,32,64]
+                "learning_rate":[0.1,0.01,0.05],
+                "n_estimators":[8,16,32,64,128,256]
             },
             "Logistic_Regression":{},
             "AdaBoost_classfier":{
-                "learning_rate":[0.1,0.01],
+                "learning_rate":[0.1,0.01,0.05],
                 "n_estimators":[8,16,32,64,128,256]
             }
         }
@@ -92,14 +92,14 @@ class ModelTrainer:
             y_true=y_train,y_pred=y_train_pred
         )
 
-        self.track_mlflow(best_model_name,best_model,classification_train_metric)
+        # self.track_mlflow(best_model_name,best_model,classification_train_metric)
 
         y_test_pred = best_model.predict(X_test)
         classification_test_metric = get_classification_score(
             y_true=y_test,y_pred=y_test_pred
         ) 
 
-        self.track_mlflow(best_model_name,best_model,classification_test_metric)
+        # self.track_mlflow(best_model_name,best_model,classification_test_metric)
 
         preprocessor = load_obj(file_path=self.data_transformation_artifact.transformed_object_file_path)
         dir_path = os.path.dirname(self.model_trainer_config.trained_model_file_path)
@@ -107,6 +107,9 @@ class ModelTrainer:
 
         Network_model = NetworkModel(preprocessor=preprocessor,model=best_model)
         save_obj(file_path=self.model_trainer_config.trained_model_file_path,obj=Network_model)
+
+        # model pusher
+        save_obj("final_models/model.pkl",best_model)
 
         model_trainer_artifact = ModelTrainerArtifact(
             trained_model_file_path=self.model_trainer_config.trained_model_file_path,
