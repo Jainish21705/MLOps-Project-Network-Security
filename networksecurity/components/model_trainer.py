@@ -5,6 +5,7 @@ from networksecurity.logging.logger import logger
 import os,sys
 import numpy as np
 import pandas as pd
+import mlflow
 
 from networksecurity.utils.main_utils.utils import save_obj,load_obj,load_numpy_array_data,evaulate_models
 from networksecurity.utils.ml_utils.metric.classfication_metric import get_classification_score
@@ -28,6 +29,18 @@ class ModelTrainer:
         except Exception as e:
             raise NetworkSecurityException(e,sys)
     
+    def track_mlflow(self,best_model_name:str,best_model,classification_train_metric:dict):
+        try:
+            f1_score = classification_train_metric.f1_score
+            precision = classification_train_metric.precision
+            recall = classification_train_metric.recall
+
+            mlflow.log_params({"best_model_name":best_model_name})
+            mlflow.log_metrics({"f1_score":f1_score,"precision":precision,"recall":recall})
+            mlflow.sklearn.log_model(best_model,"Model")
+        except Exception as e:
+            raise NetworkSecurityException(e,sys)
+        
     def train_model(self,X_train,y_train,X_test,y_test):
         models = {
             "Decision_Tree":DecisionTreeClassifier(),
@@ -39,18 +52,18 @@ class ModelTrainer:
 
         params = {
             "Decision_Tree":{
-                "criterion":['gini','entropy','log_loss']
+                "criterion":['gini','entropy']
             },
             "Random_Forest":{
-                "n_estimators":[8,16,32,64,128,256]
+                "n_estimators":[8,16,128,256]
             },
             "Gradient_Boosting":{
-                "learning_rate":[0.1,0.01,0.05],
-                "n_estimators":[8,16,32,64,128,256]
+                "learning_rate":[0.1,0.01],
+                "n_estimators":[8,16,32,64]
             },
             "Logistic_Regression":{},
             "AdaBoost_classfier":{
-                "learning_rate":[0.1,0.01,0.05],
+                "learning_rate":[0.1,0.01],
                 "n_estimators":[8,16,32,64,128,256]
             }
         }
@@ -68,15 +81,21 @@ class ModelTrainer:
 
         best_model = models[best_model_name]
 
+        # track the mlflow
+
         y_train_pred = best_model.predict(X_train)
         classification_train_metric = get_classification_score(
             y_true=y_train,y_pred=y_train_pred
         )
 
+        self.track_mlflow(best_model_name,best_model,classification_train_metric)
+
         y_test_pred = best_model.predict(X_test)
         classification_test_metric = get_classification_score(
             y_true=y_test,y_pred=y_test_pred
         ) 
+
+        self.track_mlflow(best_model_name,best_model,classification_test_metric)
 
         preprocessor = load_obj(file_path=self.data_transformation_artifact.transformed_object_file_path)
         dir_path = os.path.dirname(self.model_trainer_config.trained_model_file_path)

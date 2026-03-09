@@ -7,3 +7,4 @@ certifi
 scikit-learn
 pyaml
 dill
+mlflow
