@@ -3,9 +3,7 @@ FROM python:3.10-slim-buster
 WORKDIR /app
 
 # Install AWS CLI
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    awscli \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt update -y && apt install awscli -y
 
 # Copy requirements first (better caching)
 COPY requirements.txt .
